@@ -40,7 +40,7 @@ stages
 			withSonarQubeEnv('Test_Sonar')
 			{
 				// sh "dotnet ${scannerHome}/SonarScanner.MSBuild.dll begin /k:com.nagp2019.nipundavid.3146006.pipeline /n:com.nagp2019.nipundavid.3146006.pipeline /v:1.0 "    
-				bat 'dotnet "C:\\Program Files (x86)\\Jenkins\\tools\\hudson.plugins.sonar.MsBuildSQRunnerInstallation\\sonar_scanner_dotnet\\SonarScanner.MSBuild.dll" begin  /n:com.nagp2019.nipundavid.3146006.pipeline /n:com.nagp2019.nipundavid.3146006.pipeline /v:1.0'
+				bat 'dotnet "C:\\Program Files (x86)\\Jenkins\\tools\\hudson.plugins.sonar.MsBuildSQRunnerInstallation\\sonar_scanner_dotnet\\SonarScanner.MSBuild.dll" begin  /k:com.nagp2019.nipundavid.3146006.pipeline /k:com.nagp2019.nipundavid.3146006.pipeline /v:1.0'
 			}
 		}
 	}
