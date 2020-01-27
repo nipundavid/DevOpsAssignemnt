@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\NAGP\\DevOps2\\nipundavid\\WebApplication4\\WebApplication4.csproj",
+      "projectUniqueName": "D:\\NAGP\\GitHub\\DevOpsAssignemnt\\WebApplication4\\WebApplication4.csproj",
       "projectName": "WebApplication4",
-      "projectPath": "D:\\NAGP\\DevOps2\\nipundavid\\WebApplication4\\WebApplication4.csproj",
+      "projectPath": "D:\\NAGP\\GitHub\\DevOpsAssignemnt\\WebApplication4\\WebApplication4.csproj",
       "packagesPath": "C:\\Users\\nipundavid\\.nuget\\packages\\",
-      "outputPath": "D:\\NAGP\\DevOps2\\nipundavid\\WebApplication4\\obj\\",
+      "outputPath": "D:\\NAGP\\GitHub\\DevOpsAssignemnt\\WebApplication4\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
