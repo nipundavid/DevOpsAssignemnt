@@ -1,12 +1,11 @@
-pipeline
-{
+pipeline{
 	agent any
-	environment
-	{
-		scannerHome = tool name: 'sonar_scanner_dotnet', type: 'hudson.plugins.sonar.MsBuildSQRunnerInstallation'   
-		JOB_NAME = ''
-	}
-	options
+
+environment
+{
+    scannerHome = tool name: 'sonar_scanner_dotnet', type: 'hudson.plugins.sonar.MsBuildSQRunnerInstallation'   
+}
+options
    {
       timeout(time: 1, unit: 'HOURS')
       
@@ -16,37 +15,35 @@ pipeline
 	  //To avoid concurrent builds to avoid multiple checkouts
 	  disableConcurrentBuilds()
    }
-		 
-	stages
+     
+stages
+{
+	stage ('checkout')
+    {
+		steps
+		{
+			echo  " ********** Clone starts ******************"
+		    checkout scm	 
+		}
+    }
+    stage ('nuget')
+    {
+		steps
+		{
+			sh "dotnet restore"	 
+		}
+    }
+	stage ('Start sonarqube analysis')
 	{
-		stage ('checkout')
+		steps
 		{
-			steps
+			withSonarQubeEnv('Test_Sonar')
 			{
-				echo  " ********** Clone starts ******************"
-				checkout scm
+				sh "dotnet ${scannerHome}/SonarScanner.MSBuild.dll begin /k:$JOB_NAME /n:$JOB_NAME /v:1.0 "    
 			}
 		}
-		stage ('nuget')
-		{
-			steps
-			{
-				echo "************ restoring dependancies **********"
-				sh "dotnet restore"
-				
-			}
-		}
-		stage ('Start sonarqube analysis')
-		{
-			steps
-			{
-				withSonarQubeEnv('Test_Sonar')
-				{
-					sh "dotnet ${scannerHome}/SonarScanner.MSBuild.dll begin /k:com.nagp2019.nipundavid.3146006.pipeline /n:com.nagp2019.nipundavid.3146006.pipeline /v:1.0 "    
-				}
-			}
-		}
-		stage ('build')
+	}
+	stage ('build')
 	{
 		steps
 		{
@@ -70,40 +67,12 @@ pipeline
 	        sh "dotnet publish -c Release -o WebApplication4/app/publish"
 	    }
 	}
-		stage ('Docker Image')
-		{
-			steps
-			{
-				echo "****************** Build Docker image ****************"
-			}
-		}
-		stage ('Push to DTR')
-		{
-			steps
-			{
-				echo "***************** Pushing image to Nagarro DTR or Docker Hub **********"
-			}
-		}
-		stage ('Stop Running container')
-		{
-			steps
-			{
-				echo "*************** Removing already running conatiners *****************"
-			}
-		}
-		stage ('Docker deployment')
-		{
-			steps
-			{
-			   echo "*************** Deploying latest war on Docker Containers **************"
-			}
-		}
-	}
+}
 
-	 post {
-			always 
-			{
-				echo "*********** Executing post tasks like Email notifications *****************"
-			}
-		}
+ post {
+        always 
+		{
+			echo "*********** Executing post tasks like Email notifications *****************"
+        }
+    }
 }
