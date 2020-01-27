@@ -7,13 +7,17 @@ environment
 }
 options
    {
+      // Append time stamp to the console output.
+      timestamps()
+      
       timeout(time: 1, unit: 'HOURS')
       
-      // Discard old builds after 5 days or 5 builds count.
+      // Do not automatically checkout the SCM on every stage. We stash what
+      // we need to save time.
+     // skipDefaultCheckout()
+      
+      // Discard old builds after 10 days or 30 builds count.
       buildDiscarder(logRotator(daysToKeepStr: '5', numToKeepStr: '5'))
-	  
-	  //To avoid concurrent builds to avoid multiple checkouts
-	  disableConcurrentBuilds()
    }
      
 stages
@@ -39,8 +43,8 @@ stages
 		{
 			withSonarQubeEnv('Test_Sonar')
 			{
-				sh "dotnet ${scannerHome}/SonarScanner.MSBuild.dll begin /k:com.nagp2019.nipundavid.3146006.pipeline /n:com.nagp2019.nipundavid.3146006.pipeline /v:1.0 "    
-				// bat 'dotnet "C:\\Program Files (x86)\\Jenkins\\tools\\hudson.plugins.sonar.MsBuildSQRunnerInstallation\\sonar_scanner_dotnet\\SonarScanner.MSBuild.dll" begin  /k:com.nagp2019.nipundavid.3146006.pipeline /n:com.nagp2019.nipundavid.3146006.pipeline /v:1.0'
+				sh "dotnet ${scannerHome}/SonarScanner.MSBuild.dll begin /k:$JOB_NAME /n:$JOB_NAME /v:1.0 "
+			    
 			}
 		}
 	}
@@ -68,12 +72,47 @@ stages
 	        sh "dotnet publish -c Release -o WebApplication4/app/publish"
 	    }
 	}
+	stage ('Docker Image')
+	{
+		steps
+		{
+		    sh returnStdout: true, script: '/bin/docker build --no-cache -t dtr.nagarro.com:443/dotnetcoreapp_nipundavid:${BUILD_NUMBER} .'
+		}
+	}
+	stage ('Push to DTR')
+	{
+		steps
+		{
+			sh returnStdout: true, script: '/bin/docker push dtr.nagarro.com:443/dotnetcoreapp_nipundavid:${BUILD_NUMBER}'
+		}
+	}
+	stage ('Stop Running container')
+	{
+	    steps
+	    {
+	        sh '''
+                ContainerID=$(docker ps | grep 5000 | cut -d " " -f 1)
+                if [  $ContainerID ]
+                then
+                    docker stop $ContainerID
+                    docker rm -f $ContainerID
+                fi
+            '''
+	    }
+	}
+	stage ('Docker deployment')
+	{
+	    steps
+	    {
+	       sh 'docker run --name dotnetcoreapp_nipundavid -d -p 5000:80 dtr.nagarro.com:443/dotnetcoreapp_nipundavid:${BUILD_NUMBER}'
+	    }
+	}
 }
 
  post {
         always 
 		{
-			echo "*********** Executing post tasks like Email notifications *****************"
+			emailext attachmentsPattern: 'report.html', body: '${JELLY_SCRIPT,template="health"}', mimeType: 'text/html', recipientProviders: [[$class: 'RequesterRecipientProvider']], replyTo: 'charu.garg@nagarro.com', subject: '$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS!', to: 'charu.garg@nagarro.com'
         }
     }
 }
