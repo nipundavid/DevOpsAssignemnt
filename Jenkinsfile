@@ -76,14 +76,14 @@ pipeline
 		{
 			steps
 			{
-				// bat returnStdout: true, script: '"C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker" build --no-cache -t inderpalsingh07/dotnetcoreapp_inderpal:101 .'
+				sh returnStdout: true, script: '/bin/docker build --no-cache -t dtr.nagarro.com:443/dotnetcoreapp_nipundavid:${BUILD_NUMBER} .'
 			}
 		}
 		stage ('Docker Login')
 		{
 			steps
 			{
-				// bat '"C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker" login -u inderpalsingh07 -p iambacknow'
+				bat '"C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker" login -u nipundavid -p Markiting1!'
 			}
 		}
 		stage ('Push to DTR')
