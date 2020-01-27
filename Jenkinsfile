@@ -79,6 +79,13 @@ stages
 		    sh returnStdout: true, script: '/bin/docker build --no-cache -t dtr.nagarro.com:443/dotnetcoreapp_nipundavid:${BUILD_NUMBER} .'
 		}
 	}
+	stage ('Docker Login')
+	{
+		steps
+		{
+			sh returnStdout: true, script: '/bin/docker login -u nipundavid -p Markiting1!'
+		}
+	}
 	stage ('Push to DTR')
 	{
 		steps
@@ -112,7 +119,7 @@ stages
  post {
         always 
 		{
-			emailext attachmentsPattern: 'report.html', body: '${JELLY_SCRIPT,template="health"}', mimeType: 'text/html', recipientProviders: [[$class: 'RequesterRecipientProvider']], replyTo: 'charu.garg@nagarro.com', subject: '$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS!', to: 'charu.garg@nagarro.com'
+			emailext attachmentsPattern: 'report.html', body: '${JELLY_SCRIPT,template="health"}', mimeType: 'text/html', recipientProviders: [[$class: 'RequesterRecipientProvider']], replyTo: 'nipun.david@nagarro.com', subject: '$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS!', to: 'nipun.david@nagarro.com'
         }
     }
 }
