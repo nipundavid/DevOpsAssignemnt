@@ -43,7 +43,7 @@ stages
 		{
 			withSonarQubeEnv('Test_Sonar')
 			{
-				sh "dotnet ${scannerHome}\SonarScanner.MSBuild.dll begin \k:com.nagp2019.nipundavid.3146006.pipeline \n:com.nagp2019.nipundavid.3146006.pipeline \v:1.0 "
+				sh "dotnet ${scannerHome}\\SonarScanner.MSBuild.dll begin \\k:com.nagp2019.nipundavid.3146006.pipeline \\n:com.nagp2019.nipundavid.3146006.pipeline \\v:1.0 "
 			    
 			}
 		}
