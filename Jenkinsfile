@@ -34,36 +34,36 @@ pipeline
                 bat "dotnet restore"
 			}
 		}
-		stage ('Start sonarqube analysis')
-		{
-			steps
-			{
-				echo "*********** starting sonar analysis ***********"
-                withSonarQubeEnv('Test_Sonar')
-                {
-                    bat 'dotnet "C:\\Program Files (x86)\\Jenkins\\tools\\hudson.plugins.sonar.MsBuildSQRunnerInstallation\\sonar_scanner_dotnet\\SonarScanner.MSBuild.dll" begin  /k:com.nagp2019.nipundavid.3146006.pipeline /n:com.nagp2019.nipundavid.3146006.pipeline /v:1.0'
-                }
-            }
-		}
-		stage ('build')
-		{
-			steps
-			{
-				echo "************* building the solution **********"
-                bat "dotnet build -c Release -o WebApplication4/app/build"
-			}	
-		}
-		stage ('SonarQube Analysis end')
-		{	
-			steps
-			{
-				echo "*************** Executing Sonar analysis ***********"
-                withSonarQubeEnv('Test_Sonar')
-			    {
-                    bat 'dotnet "C:\\Program Files (x86)\\Jenkins\\tools\\hudson.plugins.sonar.MsBuildSQRunnerInstallation\\sonar_scanner_dotnet\\SonarScanner.MSBuild.dll" end' 
-                }
-			}
-		}
+		// stage ('Start sonarqube analysis')
+		// {
+		// 	steps
+		// 	{
+		// 		echo "*********** starting sonar analysis ***********"
+        //         withSonarQubeEnv('Test_Sonar')
+        //         {
+        //             bat 'dotnet "C:\\Program Files (x86)\\Jenkins\\tools\\hudson.plugins.sonar.MsBuildSQRunnerInstallation\\sonar_scanner_dotnet\\SonarScanner.MSBuild.dll" begin  /k:com.nagp2019.nipundavid.3146006.pipeline /n:com.nagp2019.nipundavid.3146006.pipeline /v:1.0'
+        //         }
+        //     }
+		// }
+		// stage ('build')
+		// {
+		// 	steps
+		// 	{
+		// 		echo "************* building the solution **********"
+        //         bat "dotnet build -c Release -o WebApplication4/app/build"
+		// 	}	
+		// }
+		// stage ('SonarQube Analysis end')
+		// {	
+		// 	steps
+		// 	{
+		// 		echo "*************** Executing Sonar analysis ***********"
+        //         withSonarQubeEnv('Test_Sonar')
+		// 	    {
+        //             bat 'dotnet "C:\\Program Files (x86)\\Jenkins\\tools\\hudson.plugins.sonar.MsBuildSQRunnerInstallation\\sonar_scanner_dotnet\\SonarScanner.MSBuild.dll" end' 
+        //         }
+		// 	}
+		// }
 		stage ('Release Artifacts')
 		{
 			steps
